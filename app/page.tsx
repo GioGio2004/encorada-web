@@ -15,7 +15,7 @@ export default function Home() {
             <span className="bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent"> Solutions</span>
           </h1>
           <p className="text-xl text-slate-300 max-w-3xl mx-auto mb-8 leading-relaxed">
-            I help junior developers and small companies build custom modules and applications from scratch. Let's turn
+            I help junior developers and small companies build custom modules and applications from scratch. Let`&apos;`s turn
             your ideas into reality.
           </p>
         </div>

@@ -52,7 +52,7 @@ export default function ContactSection() {
           Get Your Project Started
         </CardTitle>
         <CardDescription className="text-slate-300">
-          Tell me about your project and I'll help you build it. From simple modules to complete applications.
+          Tell me about your project and I`&apos;`ll help you build it. From simple modules to complete applications.
         </CardDescription>
       </CardHeader>
       <CardContent>
