@@ -3,7 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Shield, Lock, Zap, ExternalLink, Github, Package, FolderArchive, FolderCheck } from "lucide-react"
+import { Shield, Lock, Zap, Package,  FolderCheck } from "lucide-react"
 import Link from "next/link"
 
 export default function EncoradaCard() {
