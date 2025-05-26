@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
-import { Send, User, Mail, MessageSquare } from "lucide-react"
+import { Send, User, Mail, MessageSquare, Code, Zap, Shield } from 'lucide-react'
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -45,13 +45,13 @@ export default function ContactSection() {
   }
 
   return (
-    <Card id="contact" className="w-full">
+    <Card id="contact" className="w-full bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
       <CardHeader>
-        <CardTitle className="text-2xl flex items-center gap-2">
-          <Send className="h-6 w-6 text-blue-600" />
+        <CardTitle className="text-2xl flex items-center gap-2 text-white">
+          <Send className="h-6 w-6 text-purple-400" />
           Get Your Project Started
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-slate-300">
           Tell me about your project and I'll help you build it. From simple modules to complete applications.
         </CardDescription>
       </CardHeader>
@@ -59,7 +59,7 @@ export default function ContactSection() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name" className="flex items-center gap-2">
+              <Label htmlFor="name" className="flex items-center gap-2 text-slate-300">
                 <User className="h-4 w-4" />
                 Name
               </Label>
@@ -69,11 +69,12 @@ export default function ContactSection() {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Your name"
+                className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-500"
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email" className="flex items-center gap-2">
+              <Label htmlFor="email" className="flex items-center gap-2 text-slate-300">
                 <Mail className="h-4 w-4" />
                 Email
               </Label>
@@ -84,25 +85,27 @@ export default function ContactSection() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="your@email.com"
+                className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-500"
                 required
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="project">Project Type</Label>
+            <Label htmlFor="project" className="text-slate-300">Project Type</Label>
             <Input
               id="project"
               name="project"
               value={formData.project}
               onChange={handleChange}
               placeholder="e.g., React component, API integration, full application"
+              className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-500"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="message" className="flex items-center gap-2">
+            <Label htmlFor="message" className="flex items-center gap-2 text-slate-300">
               <MessageSquare className="h-4 w-4" />
               Project Details
             </Label>
@@ -113,23 +116,46 @@ export default function ContactSection() {
               onChange={handleChange}
               placeholder="Describe your project requirements, timeline, and any specific technologies you'd like to use..."
               rows={5}
+              className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-500"
               required
             />
           </div>
 
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
+          <Button 
+            type="submit" 
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white" 
+            disabled={isSubmitting}
+          >
             {isSubmitting ? "Sending..." : "Send Project Request"}
           </Button>
         </form>
 
-        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
-          <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">What I Offer:</h3>
-          <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
-            <li>• Custom React/Next.js components and modules</li>
-            <li>• API integrations and backend solutions</li>
-            <li>• Code optimization and refactoring</li>
-            <li>• Full-stack application development</li>
-            <li>• Technical consultation and mentoring</li>
+        <div className="mt-6 p-4 bg-purple-600/10 border border-purple-500/20 rounded-lg">
+          <h3 className="font-semibold text-purple-300 mb-3 flex items-center gap-2">
+            <Code className="h-4 w-4" />
+            What I Offer:
+          </h3>
+          <ul className="text-sm text-slate-300 space-y-2">
+            <li className="flex items-center gap-2">
+              <Zap className="h-3 w-3 text-purple-400" />
+              Custom React/Next.js components and modules
+            </li>
+            <li className="flex items-center gap-2">
+              <Shield className="h-3 w-3 text-purple-400" />
+              API integrations and backend solutions
+            </li>
+            <li className="flex items-center gap-2">
+              <Code className="h-3 w-3 text-purple-400" />
+              Code optimization and refactoring
+            </li>
+            <li className="flex items-center gap-2">
+              <Zap className="h-3 w-3 text-purple-400" />
+              Full-stack application development
+            </li>
+            <li className="flex items-center gap-2">
+              <Shield className="h-3 w-3 text-purple-400" />
+              Technical consultation and mentoring
+            </li>
           </ul>
         </div>
       </CardContent>
