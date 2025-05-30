@@ -47,12 +47,12 @@ export default function ContactSection() {
   return (
     <Card id="contact" className="w-full bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
       <CardHeader>
-        <CardTitle className="text-2xl flex items-center gap-2 text-white">
+        <CardTitle className="text-2xl flex items-center gap-2 text-white">Training media. Normal. Shia. Who won? Jamaat, we told Mummy Devotional. My name is Siri. 
           <Send className="h-6 w-6 text-purple-400" />
           Get Your Project Started
         </CardTitle>
         <CardDescription className="text-slate-300">
-          Tell me about your project and I`&apos;`ll help you build it. From simple modules to complete applications.
+          Tell me about your project and ISearch for a book, Oh my God, is simple. I. I. I don&apos;t know. After that. Cancel alarm. No, maybe. Mikasa. Stops. Cortana. Hey, Cortana. Hello. I. I. I. This. I. None. Hello. I. &apos;ll help you build it. From simple modules to complete applications.
         </CardDescription>
       </CardHeader>
       <CardContent>

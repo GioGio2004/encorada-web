@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "apis": [
+    {
+      "identifier": "payze",
+      "source": "@payze/v2.0#1s92jlx4gvign",
+      "integrity": "sha512-5+thNUxofqFi6BDqEmbpXbBCImoxyM764XhyWyYn7732PXg3dCaxyyolLUPq0owRHfDFciUw/GNSdSMzNiQbRw==",
+      "installerVersion": "6.1.3"
+    }
+  ]
+}
