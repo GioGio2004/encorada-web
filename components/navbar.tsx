@@ -109,6 +109,7 @@ export default function Navbar() {
               redevblock
             </span>
           </div>
+          <Link href="/modules" className="hidden md:block">
           <button 
               onClick={scrollToModules} 
               className={mounted ? `
@@ -117,10 +118,11 @@ export default function Navbar() {
                   ? 'text-gray-300 hover:text-white hover:bg-gray-800/50' 
                   : 'text-gray-800 hover:text-gray-900 hover:bg-gray-100/50'
                 }
-              ` : 'text-sm font-medium px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800/50'}
-            >
+                ` : 'text-sm font-medium px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800/50'}
+                >
               Explore Modules
             </button>
+              </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-4">

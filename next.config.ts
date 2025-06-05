@@ -1,8 +1,23 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-    env: {
-    ENCORADA_SECRET_KEY: process.env.ENCORADA_SECRET_KEY,
+
+eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  images: {
+    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
 };
 

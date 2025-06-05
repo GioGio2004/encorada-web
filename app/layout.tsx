@@ -4,6 +4,7 @@ import "./globals.css";
 import { EncoradaProvider } from "@/lib/encorada/EncoradaProvider";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ConvexClientProvider } from "@/components/providers/ConvexClientProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,16 +32,16 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-
-          <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-
-          <EncoradaProvider>{children}</EncoradaProvider>
-        </ThemeProvider>
+          <ConvexClientProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+            </ThemeProvider>
+          </ConvexClientProvider>
         </body>
       </html>
     </ClerkProvider>
