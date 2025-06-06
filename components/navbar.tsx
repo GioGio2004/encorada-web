@@ -297,19 +297,21 @@ export default function Navbar() {
                   </Button>
                 </div>
               )}
-
+              
+              <Link href="/modules">
               <button 
                 onClick={scrollToModules} 
                 className={`
-                  w-full justify-start text-left px-3 py-2 rounded-lg transition-all duration-300
+                  w-full justify-start text-left px-3 py-2 rounded-lg transition-all border-gray-500 bg-slate-700/90 duration-300
                   ${isDark 
                     ? 'text-gray-300 hover:text-white hover:bg-gray-800/50' 
                     : 'text-gray-800 hover:text-gray-900 hover:bg-gray-100/50'
                   }
-                `}
-              >
+                  `}
+                  >
                 Explore Modules
               </button>
+                </Link>
             </div>
           </div>
         )}

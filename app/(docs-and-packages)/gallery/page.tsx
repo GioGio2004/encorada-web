@@ -21,9 +21,8 @@ import {
   X,
   Copy,
   Check,
-  LucideIcon
+  Menu
 } from 'lucide-react';
-import Link from 'next/link';
 
 interface ImageData {
   nature: string[];
@@ -49,7 +48,7 @@ interface ApiResponse {
 interface Category {
   key: keyof ImageData;
   label: string;
-  icon: LucideIcon | string;
+  icon: React.ComponentType<any> | string;
   color: string;
 }
 
@@ -91,8 +90,8 @@ const GalleryPage: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isSearching, setIsSearching] = useState<boolean>(false);
-  const [showSearch, setShowSearch] = useState<boolean>(false);
   const [copiedLinks, setCopiedLinks] = useState<Set<string>>(new Set());
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const categories: Category[] = [
@@ -181,7 +180,6 @@ const GalleryPage: React.FC = () => {
       await navigator.clipboard.writeText(imageUrl);
       setCopiedLinks(prev => new Set(prev).add(imageUrl));
       
-      // Remove the copied state after 2 seconds
       setTimeout(() => {
         setCopiedLinks(prev => {
           const newSet = new Set(prev);
@@ -191,7 +189,6 @@ const GalleryPage: React.FC = () => {
       }, 2000);
     } catch (err) {
       console.error('Failed to copy link:', err);
-      // Fallback for older browsers
       const textArea = document.createElement('textarea');
       textArea.value = imageUrl;
       document.body.appendChild(textArea);
@@ -291,7 +288,7 @@ const GalleryPage: React.FC = () => {
   );
 
   const LoadingSkeleton: React.FC = () => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {Array.from({ length: 10 }).map((_, i) => (
         <Skeleton key={i} className="h-64 w-full rounded-lg bg-white/10" />
       ))}
@@ -340,7 +337,6 @@ const GalleryPage: React.FC = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
-        {/* Animated Background */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
@@ -367,7 +363,7 @@ const GalleryPage: React.FC = () => {
   const currentImages = images[activeCategory] || [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex">
       {/* Animated Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
@@ -375,169 +371,249 @@ const GalleryPage: React.FC = () => {
         <div className="absolute top-40 left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
       </div>
 
-      {/* Header */}
-      <div className="sticky top-0 z-40 bg-black/20 backdrop-blur-xl border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <Link href="/">
-                <Button variant="ghost" size="sm" className="text-white/80 hover:text-white hover:bg-white/10">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back
-                </Button>
-              </Link>
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
-                  <Camera className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-purple-200 to-purple-400 bg-clip-text text-transparent">
-                    Image Gallery
-                  </h1>
-                  <p className="text-gray-400 text-sm">Powered by grab-picture</p>
-                </div>
+      {/* Sidebar Overlay for Mobile */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div className={`fixed lg:static inset-y-0 left-0 z-50 w-80 bg-black/40 backdrop-blur-xl border-r border-white/10 transform transition-transform duration-300 lg:transform-none ${
+        sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      }`}>
+        <div className="flex flex-col h-full p-6">
+          {/* Sidebar Header */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
+                <Camera className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-white">Gallery</h2>
+                <p className="text-gray-400 text-sm">grab-picture</p>
               </div>
             </div>
-            
-            <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="lg:hidden text-white hover:bg-white/10"
+              onClick={() => setSidebarOpen(false)}
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+
+          {/* Back Button */}
+          <Button 
+            variant="ghost" 
+            className="w-full justify-start text-white/80 hover:text-white hover:bg-white/10 mb-6"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Home
+          </Button>
+
+          {/* View Mode Toggle */}
+          <div className="mb-6">
+            <h3 className="text-sm font-medium text-gray-400 mb-3">View Mode</h3>
+            <div className="grid grid-cols-2 gap-2 bg-white/5 backdrop-blur-sm rounded-lg p-1">
               <Button
-                onClick={() => setShowSearch(!showSearch)}
-                variant="outline"
-                className="border-white/20 text-white hover:bg-white/10"
+                size="sm"
+                variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                onClick={() => setViewMode('grid')}
+                className={`w-full ${viewMode === 'grid' ? 'bg-white/20 text-white' : 'text-white/80 hover:text-white hover:bg-white/10'}`}
               >
-                <Search className="w-4 h-4 mr-2" />
-                Search
+                <Grid className="w-4 h-4 mr-2" />
+                Grid
               </Button>
-              
               <Button
-                onClick={() => fetchImages()}
-                disabled={loading}
-                variant="outline"
-                className="border-white/20 text-white hover:bg-white/10"
+                size="sm"
+                variant={viewMode === 'list' ? 'default' : 'ghost'}
+                onClick={() => setViewMode('list')}
+                className={`w-full ${viewMode === 'list' ? 'bg-white/20 text-white' : 'text-white/80 hover:text-white hover:bg-white/10'}`}
               >
-                <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                Refresh
+                <List className="w-4 h-4 mr-2" />
+                List
               </Button>
-              
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg p-1">
-                <Button
-                  size="sm"
-                  variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                  onClick={() => setViewMode('grid')}
-                  className={viewMode === 'grid' ? 'bg-white/20 text-white' : 'text-white/80 hover:text-white hover:bg-white/10'}
-                >
-                  <Grid className="w-4 h-4" />
-                </Button>
-                <Button
-                  size="sm"
-                  variant={viewMode === 'list' ? 'default' : 'ghost'}
-                  onClick={() => setViewMode('list')}
-                  className={viewMode === 'list' ? 'bg-white/20 text-white' : 'text-white/80 hover:text-white hover:bg-white/10'}
-                >
-                  <List className="w-4 h-4" />
-                </Button>
-              </div>
             </div>
           </div>
 
-          {/* Search Bar */}
-          {showSearch && (
-            <div className="mt-4 animate-in slide-in-from-top duration-300">
-              <div className="relative max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input
-                  placeholder="Search for images..."
-                  value={searchQuery}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-gray-400 focus:border-purple-400"
-                />
-                {isSearching && (
-                  <RefreshCw className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 animate-spin" />
-                )}
+          {/* Categories */}
+          <div className="flex-1">
+            <h3 className="text-sm font-medium text-gray-400 mb-3">Categories</h3>
+            <div className="space-y-2">
+              {categories.map((category) => {
+                const Icon = category.icon;
+                const isActive = activeCategory === category.key;
+                const count = images[category.key]?.length || 0;
+                
+                if (category.key === 'queryImages' && count === 0) return null;
+                
+                return (
+                  <Button
+                    key={category.key}
+                    variant={isActive ? 'default' : 'ghost'}
+                    className={`w-full justify-start transition-all duration-300 ${
+                      isActive 
+                        ? `bg-gradient-to-r ${category.color} text-white shadow-lg border-transparent`
+                        : 'text-white/80 hover:text-white hover:bg-white/10'
+                    }`}
+                    onClick={() => {
+                      setActiveCategory(category.key);
+                      setSidebarOpen(false);
+                    }}
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex items-center gap-3">
+                        {typeof Icon === 'string' ? (
+                          <span className="text-lg">{Icon}</span>
+                        ) : (
+                          <Icon className="w-4 h-4" />
+                        )}
+                        <span>{category.label}</span>
+                      </div>
+                      <Badge variant="secondary" className="bg-white/20 text-white">
+                        {count}
+                      </Badge>
+                    </div>
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Refresh Button */}
+          <Button
+            onClick={() => fetchImages()}
+            disabled={loading}
+            variant="outline"
+            className="w-full border-white/20 text-white hover:bg-white/10 mt-6"
+          >
+            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            Refresh Gallery
+          </Button>
+
+          {/* Stats */}
+          <div className="mt-6 bg-white/5 backdrop-blur-sm rounded-lg p-4">
+            <div className="text-sm text-gray-300 space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Camera className="w-4 h-4" />
+                  <span>Total Images</span>
+                </div>
+                <span className="font-semibold text-white">{Object.values(images).flat().length}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Heart className="w-4 h-4 text-red-400" />
+                  <span>Favorites</span>
+                </div>
+                <span className="font-semibold text-white">{favorites.size}</span>
               </div>
             </div>
-          )}
-
-          {/* Category Tabs */}
-          <div className="flex flex-wrap gap-2 mt-6">
-            {categories.map((category) => {
-              const Icon = category.icon;
-              const isActive = activeCategory === category.key;
-              const count = images[category.key]?.length || 0;
-              
-              // Don't show search results tab if no search images
-              if (category.key === 'queryImages' && count === 0) return null;
-              
-              return (
-                <Button
-                  key={category.key}
-                  variant={isActive ? 'default' : 'outline'}
-                  className={`flex items-center gap-2 transition-all duration-300 ${
-                    isActive 
-                      ? `bg-gradient-to-r ${category.color} text-white shadow-lg scale-105 border-transparent`
-                      : 'border-white/20 text-white/80 hover:text-white hover:bg-white/10 hover:scale-105'
-                  }`}
-                  onClick={() => setActiveCategory(category.key)}
-                >
-                  {typeof Icon === 'string' ? (
-                    <span className="text-lg">{Icon}</span>
-                  ) : (
-                    <Icon className="w-4 h-4" />
-                  )}
-                  {category.label}
-                  <Badge variant="secondary" className="ml-1 bg-white/20 text-white">
-                    {count}
-                  </Badge>
-                </Button>
-              );
-            })}
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 py-8">
-        {loading ? (
-          <LoadingSkeleton />
-        ) : (
-          <div 
-            className={`grid gap-6 animate-in slide-in-from-bottom duration-500 ${
-              viewMode === 'grid' 
-                ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
-                : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
-            }`}
-          >
-            {currentImages.map((imageUrl, index) => (
-              <div
-                key={`${activeCategory}-${index}`}
-                className="animate-in fade-in slide-in-from-bottom"
-                style={{ animationDelay: `${index * 50}ms` }}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Header */}
+        <div className="sticky top-0 z-30 bg-black/20 backdrop-blur-xl border-b border-white/10">
+          <div className="px-4 lg:px-8 py-4">
+            <div className="flex items-center gap-4">
+              {/* Mobile Menu Button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="lg:hidden text-white hover:bg-white/10"
+                onClick={() => setSidebarOpen(true)}
               >
-                <ImageCard 
-                  imageUrl={imageUrl} 
-                  index={index}
-                  onToggleFavorite={toggleFavorite}
-                  onDownload={downloadImage}
-                  onOpen={openImage}
-                  onSelect={setSelectedImage}
-                  onCopyLink={copyImageLink}
-                  isFavorite={favorites.has(imageUrl)}
-                  isCopied={copiedLinks.has(imageUrl)}
-                />
-              </div>
-            ))}
-          </div>
-        )}
+                <Menu className="w-5 h-5" />
+              </Button>
 
-        {!loading && currentImages.length === 0 && (
-          <div className="text-center py-12">
-            <Sparkles className="w-16 h-16 text-gray-500 mx-auto mb-4" />
-            <p className="text-gray-400 text-lg">No images found</p>
-            {activeCategory === 'queryImages' && searchQuery && (
-              <p className="text-gray-500 text-sm mt-2">Try searching for something else</p>
-            )}
+              {/* Search Bar */}
+              <div className="flex-1 max-w-md">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Input
+                    placeholder="Search for images..."
+                    value={searchQuery}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+                    className="pl-10 bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder:text-gray-400 focus:border-purple-400"
+                  />
+                  {isSearching && (
+                    <RefreshCw className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 animate-spin" />
+                  )}
+                </div>
+              </div>
+
+              {/* Current Category Badge (Mobile) */}
+              <div className="lg:hidden">
+                {(() => {
+                  const category = categories.find(cat => cat.key === activeCategory);
+                  if (!category) return null;
+                  const Icon = category.icon;
+                  return (
+                    <Badge className={`bg-gradient-to-r ${category.color} text-white`}>
+                      {typeof Icon === 'string' ? (
+                        <span className="text-sm mr-1">{Icon}</span>
+                      ) : (
+                        <Icon className="w-3 h-3 mr-1" />
+                      )}
+                      {category.label}
+                    </Badge>
+                  );
+                })()}
+              </div>
+            </div>
           </div>
-        )}
+        </div>
+
+        {/* Gallery Content */}
+        <div className="flex-1 p-4 lg:p-8">
+          {loading ? (
+            <LoadingSkeleton />
+          ) : (
+            <div 
+              className={`grid gap-6 animate-in slide-in-from-bottom duration-500 ${
+                viewMode === 'grid' 
+                  ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+                  : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+              }`}
+            >
+              {currentImages.map((imageUrl, index) => (
+                <div
+                  key={`${activeCategory}-${index}`}
+                  className="animate-in fade-in slide-in-from-bottom"
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  <ImageCard 
+                    imageUrl={imageUrl} 
+                    index={index}
+                    onToggleFavorite={toggleFavorite}
+                    onDownload={downloadImage}
+                    onOpen={openImage}
+                    onSelect={setSelectedImage}
+                    onCopyLink={copyImageLink}
+                    isFavorite={favorites.has(imageUrl)}
+                    isCopied={copiedLinks.has(imageUrl)}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {!loading && currentImages.length === 0 && (
+            <div className="text-center py-12">
+              <Sparkles className="w-16 h-16 text-gray-500 mx-auto mb-4" />
+              <p className="text-gray-400 text-lg">No images found</p>
+              {activeCategory === 'queryImages' && searchQuery && (
+                <p className="text-gray-500 text-sm mt-2">Try searching for something else</p>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Image Modal */}
@@ -548,22 +624,6 @@ const GalleryPage: React.FC = () => {
           onCopyLink={copyImageLink}
           isCopied={copiedLinks.has(selectedImage)}
         />
-      )}
-
-      {/* Floating Stats */}
-      {!loading && (
-        <div className="fixed bottom-6 right-6 bg-black/40 backdrop-blur-xl rounded-lg p-4 shadow-lg border border-white/10">
-          <div className="text-sm text-gray-300">
-            <div className="flex items-center gap-2 mb-1">
-              <Camera className="w-4 h-4" />
-              <span>Total: <span className="font-semibold text-white">{Object.values(images).flat().length}</span></span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Heart className="w-4 h-4 text-red-400" />
-              <span>Favorites: <span className="font-semibold text-white">{favorites.size}</span></span>
-            </div>
-          </div>
-        </div>
       )}
     </div>
   );
